@@ -142,6 +142,22 @@ module.exports = async () => {
         return false;
     })
 
+    // Share the same controller with local automation, so the periodic update,
+    // keyboard shortcuts and cast actions all keep one authoritative volume.
+    require('../../util/bigscreen-runtime').setVolumeController({
+        snapshot: () => ({level: volume / 100, muted}),
+        setLevel: (level) => {
+            volume = Math.round(level * 100)
+            showVolumeIndicator()
+            setVolume()
+        },
+        setMuted: (value) => {
+            muted = value
+            showVolumeIndicator()
+            setVolume()
+        }
+    })
+
     //player can change sometimes
     setInterval(() => {
         setVolume(true)

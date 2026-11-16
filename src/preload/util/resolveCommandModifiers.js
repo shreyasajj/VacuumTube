@@ -51,6 +51,13 @@ module.exports = {
             .then(() => globalResolveCommand(command))
         }
     },
+    // Fixed local controls can report readiness instead of silently queuing forever.
+    tryResolveCommand: (command) => {
+        if (!globalResolveCommand) return false;
+        globalResolveCommand(command)
+        return true;
+    },
+    canResolveCommand: () => !!globalResolveCommand,
     addInputModifier,
     addOutputModifier
 }
