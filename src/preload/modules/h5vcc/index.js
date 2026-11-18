@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron')
+const bigscreen = require('../../util/bigscreen-runtime')
 const http = require('./dial/http')
 const DialServer = require('./dial/server')
 const discover = require('./dial/discover')
@@ -54,8 +55,10 @@ function createOnDeepLink() {
     function callListener(listener, deeplink) {
         try {
             listener(deeplink)
+            return true
         } catch (err) {
             console.error('[h5vcc] Deeplink listener failed', err)
+            return false
         }
     }
 
@@ -72,7 +75,13 @@ function createOnDeepLink() {
 
     return {
         addListener: (listener) => {
+            if (typeof listener !== 'function') return
             listeners.push(listener)
+            bigscreen.setNavigation((deeplink) => {
+                let delivered = false
+                for (const target of listeners) delivered = callListener(target, deeplink) || delivered
+                return delivered
+            })
             while (pending.length > 0) {
                 callListener(listener, pending.shift())
             }

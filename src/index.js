@@ -48,6 +48,7 @@ const runningOnSteam = process.env.SteamOS === '1' && process.env.SteamGamepadUI
 let win;
 let config;
 let windowDeeplink = null;
+let bigscreenControl;
 
 async function main() {
     if (argv['version']) {
@@ -302,6 +303,7 @@ async function main() {
 
     userstyles.setup({ userData, getWindow: () => win })
 
+    bigscreenControl = require('./bridge-electron').setup({electron, getWindow: () => win})
     await createWindow()
 
     updater.setup({
@@ -362,6 +364,8 @@ async function createWindow() {
         },
         title: 'VacuumTube'
     })
+
+    bigscreenControl?.watchWindow(win)
 
     // Ensure the *content* area (excluding OS window borders) stays 16:9 on all platforms.
     const [ outerW, outerH ] = win.getSize()

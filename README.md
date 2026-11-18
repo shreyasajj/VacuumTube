@@ -218,3 +218,9 @@ npm run windows:build
 npm run mac:build
 npm run linux:build(-unpacked,-appimage)
 ```
+
+## Bigscreen Bridge
+
+The development branch includes private local control for Home Assistant: video,
+playlist and search navigation, playback metadata, player controls and shared app
+volume/mute. See [the protocol, tested behavior and install guide](docs/bigscreen-bridge.md).
